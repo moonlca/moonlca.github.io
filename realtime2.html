@@ -9,40 +9,29 @@ Your browser does not support the canvas element.
 
 <script>
 cnt=0;
+timeoutID = window.setInterval(loop,1000/30);
 var start_index =[ 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
 var end_index = [ 0,1,2,3,1,5,6,1,8,9,1,11,12,0,0,14,15];
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 ctx.strokeStyle = "#000000";
 var xmlhttp = new XMLHttpRequest();
-var url = "https://miku-e8828.firebaseio.com/node.json";
-xl=[];
-yl=[];
-xmlhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
-    var myArr = JSON.parse(this.responseText);
-    for(i=0;i<Object.keys(myArr).length;i++){
-        var Key = Object.keys(myArr)[i];
-        xl.push(eval(myArr[Key].x));
-        yl.push(eval(myArr[Key].y));
-    }
-    timeoutID = window.setInterval(loop,1000/12);
+var url = "https://miku-bc662.firebaseio.com/node.json";
 
-  }
-};
-xmlhttp.open("GET", url, true);
-xmlhttp.send();
 function loop(){
-    if (cnt>xl.length-1){
-        console.log(cnt);
-        window.clearInterval(timeoutID);
-    }else{
-        console.log(cnt);
-        x = xl[cnt];
-        y = yl[cnt];
-        draw(x,y);
-        cnt++;
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var myArr = JSON.parse(this.responseText);
+        for(i=0;i<Object.keys(myArr).length;i++){
+            var Key = Object.keys(myArr)[0];
+            x = eval(myArr[Key].x);
+            y = eval(myArr[Key].y);
+        }
     }
+    };
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+    if(Array.isArray(x) && x.length){draw(x,y);}
 }
 
 function draw(x,y) {
